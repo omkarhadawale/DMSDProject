@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Landing Page{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<div class="container-fluid">
+    <div class="h3">Welcome Admin user {{current_user.username}}</div>
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Get Reader ID{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+
+<div class="h4">Enter Card No(Reader ID)</div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{render_field(form.RID)}}
+        {{form.submit(class="btn btn-primary")}}
+    </form>
+</div>
+{% endblock %}

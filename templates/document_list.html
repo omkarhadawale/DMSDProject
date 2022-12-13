@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block title %}List Samples{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<div class="container-fluid">
+    <div class="h1">Welcome {{READERNAME}} ({{RID}})</div>
+    <div class="h3">Search Documents</div>
+    
+    <div class="container-fluid">
+        <form class="row row-cols-lg-auto g-3 align-items-center" method="POST">
+            {{ form.hidden_tag() }}
+            {{render_field(form.value)}}
+            <label for="column">Search By</label>
+            <select id="column" name="column">
+            <option value="DOCID">Document Id</option>
+            <option value="TITLE">Title</option>
+            <option value="PUBNAME">Publisher name</option>
+        </select>
+            {{render_field(form.limit)}}
+            {{form.submit(class="btn btn-primary")}}
+        </form>
+    </div>
+
+    <table class="table">
+        {% if resp and resp|length > 0 %}
+        <thead>
+            <tr class="text-capitalize">
+                {% for r in resp[0] %}
+                <th>{{r}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        {% for r in resp %}
+        <tr>
+            {% for v in r.values() %}
+            <td>{{v}}</td>
+            {% endfor %}
+            <td><a href="{{url_for('sample.checkout', DOCID=r.get('DOCID'))}}" class="btn btn-success">CHECKOUT</a>
+                {# **request.args spreads the key value pairs to be part of the url#}
+                {# the idea is to pass it to the next route #}
+                <a href="{{url_for('sample.returns', DOCID=r.get('DOCID'))}}"
+                    class="btn btn-primary">RETURN</a>
+                    <a href="{{url_for('sample.reserve', DOCID=r.get('DOCID'))}}"
+                    class="btn btn-secondary">RESERVE</a>   
+            </td>
+        </tr>
+        
+        {% endfor %}
+        {% else %}
+        <p>No results to show</p>
+        {% endif %}
+    </table>
+</div>
+</div>
+{% endblock %}

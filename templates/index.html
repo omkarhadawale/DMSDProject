@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<head>
+    <style>
+    .h1 {
+    color: white;
+    }
+    </style>
+    </head>
+<body style="background-image:url('https://png.pngtree.com/background/20211215/original/pngtree-the-background-photography-of-the-empty-library-bookstore-indoors-picture-image_1474812.jpg');">
+{%set l = [1,2,3,4,5,6,7]%}
+{%for i in l%}
+</br>
+{% endfor %}
+<center><div class="h1" color="white">Welcome to Library Management System</div></center>
+</body>
+{% endblock %}

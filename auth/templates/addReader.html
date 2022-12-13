@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}Add Reader{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+
+<div class="h4">Add Reader</div>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        {{render_field(form.RNAME)}}
+        <label for="RTYPE">Reader Type</label></br>
+        <select id="RTYPE" name="RTYPE">
+            <option value="STAFF">STAFF</option>
+            <option value="STUDENT">STUDENT</option>
+            <option value="SENIOR CITIZEN">SENIOR CITIZEN</option>
+        </select></br>
+    </br>
+        {{render_field(form.ADDRESS)}}
+        {{render_field(form.PHONE_NO)}}
+        {{form.submit(class="btn btn-primary")}}
+    </form>
+</div>
+
+
+{% endblock %}
