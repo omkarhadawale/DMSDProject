@@ -38,8 +38,6 @@
             <td><a href="{{url_for('sample.checkout', DOCID=r.get('DOCID'))}}" class="btn btn-success">CHECKOUT</a>
                 {# **request.args spreads the key value pairs to be part of the url#}
                 {# the idea is to pass it to the next route #}
-                <a href="{{url_for('sample.returns', DOCID=r.get('DOCID'))}}"
-                    class="btn btn-primary">RETURN</a>
                     <a href="{{url_for('sample.reserve', DOCID=r.get('DOCID'))}}"
                     class="btn btn-secondary">RESERVE</a>   
             </td>

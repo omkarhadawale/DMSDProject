@@ -27,7 +27,8 @@
                 {% if current_user.has_role("Admin") %}
                 {% set samples = [
                 ("auth.addReader", "Add Reader"),
-                ("auth.addDocument", "Add Document")
+                ("auth.addDocument", "Add Document"),
+                ("auth.listBranch", "List Branches")
                 ] %}
                 {{dropdown_nav("Admin Functions", samples)}}
                 {% endif %}

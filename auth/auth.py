@@ -3,12 +3,13 @@ import re
 from turtle import pd
 from flask import Blueprint, render_template, flash, redirect, url_for,current_app, session
 import pyodbc
-from auth.forms import AddReader, ChangeUserPassword, LoginForm, RegisterForm, UserProfileEdit
+from auth.forms import AddDocument, AddReader, ChangeUserPassword, LoginForm, RegisterForm, UserProfileEdit
 from sql.db import DB
 
 from flask_login import login_user, login_required, logout_user
 from auth.models import User
 from flask_bcrypt import Bcrypt
+import pandas as p
 
 bcrypt = Bcrypt()
 
@@ -199,11 +200,47 @@ def addReader():
     
     return render_template("addReader.html", form=addRform)
 
-@auth.route('/addDocument', methods=['GET'])
+  
+
+
+@auth.route('/listBranch', methods=['GET'])
+@login_required
+def listBranch():
+    conn_str = (r'DRIVER={SQL Server};'r'SERVER=Omkar;'r'DATABASE=OPR;'r'Trusted_Connection=yes;')
+    cnxn = pyodbc.connect(conn_str)
+    rows = None
+    print("connection established")
+    # cursor = cnxn.cursor()
+    try:
+        data = p.read_sql(f"SELECT LNAME,BRANCH_LOCATION FROM BRANCH", cnxn)
+        rows = data.to_dict('records')
+    except Exception as e:
+        flash(f"{str(e)}","danger")
+        flash("Their was error retriving","warning")
+    
+    return render_template("listBranch.html", resp=rows)
+    
+    
+
+
+@auth.route('/addDocument', methods=['GET','POST'])
 @login_required
 def addDocument():
-    
-    
-    
-    flash("Add document","success")
-    return redirect(url_for("sample.list"))   
+    form = AddDocument()
+    if form.validate_on_submit():
+        DOCID = form.DOCID.data
+        COPYNO = form.COPYNO.data
+        BID = form.BID.data
+        POSITION = form.POSITION.data
+        conn_str = (r'DRIVER={SQL Server};'r'SERVER=Omkar;'r'DATABASE=OPR;'r'Trusted_Connection=yes;')
+        cnxn = pyodbc.connect(conn_str)
+        print("connection established")
+        try:
+            cursor = cnxn.cursor()
+            cursor.execute(f"INSERT INTO BOOK_COPY VALUES('{DOCID}',{COPYNO},'{BID}','{POSITION}')")
+            cursor.commit()
+            flash("Document Added Successfully","success")
+        except Exception as e:
+            flash("Document Copy already Exists","warning")    
+
+    return render_template("addDocument.html",form=form)   

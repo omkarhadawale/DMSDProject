@@ -9,5 +9,10 @@
         {{render_field(form.RID)}}
         {{form.submit(class="btn btn-primary")}}
     </form>
-</div>
+</br></br>
+    <form method="POST">
+        {{ form1.hidden_tag() }}
+        {{render_field(form1.RID1)}}
+        {{form1.submit(class="btn btn-primary")}}
+    </form>
 {% endblock %}

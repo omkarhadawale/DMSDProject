@@ -3,6 +3,8 @@ import os
 import sys
 from flask import Flask, session, render_template
 from dotenv import load_dotenv
+import pandas as pd
+import pyodbc
 load_dotenv()
 import flask_login
 from flask_login import current_user
@@ -80,18 +82,16 @@ def create_app(config_filename=''):
                 for role in current_user.roles:
                     identity.provides.add(RoleNeed(role.name))
 
-        #getting publishers for dropdown    
-        def get_publishers():
-            import pyodbc
-            try:
-                print("get Publishers")
-                # note this triggers for GET and POST
-                result = DB.selectAll("SELECT id, name FROM IS601_MP2_Companies")
-                if result.status:
-                    return result.rows or []
-            except Exception as e:
-                print(e)
-            return []                
+        #getting publishers for dropdown 
+        @app.template_global()
+        # @cache.cached(timeout=30)   
+        def get_DOCID():
+            conn_str = ( r'DRIVER={SQL Server};'r'SERVER=Omkar;'r'DATABASE=OPR;'r'Trusted_Connection=yes;')
+            cnxn = pyodbc.connect(conn_str)
+            print("connection established")
+            data = pd.read_sql("SELECT DOCID FROM DOCUMENT", cnxn)
+            data = data['DOCID'].tolist()   
+            return data             
         return app
 
 

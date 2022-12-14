@@ -2,23 +2,20 @@
 {% block title %}Add Reader{% endblock %}
 {% block content %}
 {% from "_formhelpers.html" import render_field %}
-
-<div class="h4">Add Reader</div>
+{% set docid = get_DOCID()%}
+<div class="h4">Add Document</div>
     <form method="POST">
         {{ form.hidden_tag() }}
-        {{render_field(form.RNAME)}}
-        <label for="RTYPE">Reader Type</label></br>
-        <select id="RTYPE" name="RTYPE">
-            <option value="STAFF">STAFF</option>
-            <option value="STUDENT">STUDENT</option>
-            <option value="SENIOR CITIZEN">SENIOR CITIZEN</option>
+        <label for="DOCID">Document ID</label></br>
+        <select id="DOCID" name="DOCID">
+            {%for id in docid%}
+            <option value="{{id}}">{{id}}</option>
+            {% endfor %}
         </select></br>
-    </br>
-        {{render_field(form.ADDRESS)}}
-        {{render_field(form.PHONE_NO)}}
+        {{render_field(form.COPYNO)}}
+        {{render_field(form.BID)}}
+        {{render_field(form.POSITION)}}
         {{form.submit(class="btn btn-primary")}}
     </form>
 </div>
-
-
 {% endblock %}

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}List Branch{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="h1">Branch List</div>
+    
+    <table class="table">
+        {% if resp and resp|length > 0 %}
+        <thead>
+            <tr class="text-capitalize">
+                {% for r in resp[0] %}
+                <th>{{r}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        {% for r in resp %}
+        <tr>
+            {% for v in r.values() %}
+            <td>{{v}}</td>
+            {% endfor %}
+        </tr>
+        
+        {% endfor %}
+        {% else %}
+        <p>No results to show</p>
+        {% endif %}
+    </table>
+</div>
+</div>
+{% endblock %}

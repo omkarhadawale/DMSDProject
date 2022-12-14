@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block title %}List borrowed books{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<div class="container-fluid">
+    <div class="h1">Welcome {{READERNAME}} ({{RID}})</div>
+    <div class="h3">Your Borrowed Documents</div>
+
+    <table class="table">
+        {% if resp and resp|length > 0 %}
+        <thead>
+            <tr class="text-capitalize">
+                {% for r in resp[0] %}
+                <th>{{r}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        {% for r in resp %}
+        <tr>
+            {% for v in r.values() %}
+            <td>{{v}}</td>
+            {% endfor %}
+            <td>
+                <a href="{{url_for('sample.returns', DOCID=r.get('DOCID'),COPYNO=r.get('COPYNO'),BID=r.get('BID'),RID=RID,READERNAME=READERNAME)}}"
+                    class="btn btn-primary">RETURN</a>
+            </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <p>No results to show</p>
+        {% endif %}
+    </table>
+</div>
+</div>
+{% endblock %}

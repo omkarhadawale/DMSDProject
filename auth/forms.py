@@ -32,16 +32,21 @@ class AddReader(FlaskForm):
     PHONE_NO = StringField("Phone no",validators=[InputRequired()])
     submit = SubmitField("Add")
 
-# class AddDocument(FlaskForm):
-#     DOCID = StringField("DOCID",validators=[InputRequired()])
-#     TITLE = StringField("TITLE",validators=[InputRequired()])
-#     PDATE = StringField("PDATE",validators=[InputRequired()])
-#     PUBLISHERID = StringField("PUBLISHERID",validators=[InputRequired()])
-#     submit = SubmitField("Add Document Copy")    
+class AddDocument(FlaskForm):
+    DOCID = StringField("Document Id",validators=[InputRequired()])
+    COPYNO = StringField("Copy No",validators=[InputRequired()])
+    BID = StringField("Branch Id",validators=[InputRequired()])
+    POSITION = StringField("Position",validators=[InputRequired()])
+    submit = SubmitField("Add Document Copy")    
 
 class ReaderId(FlaskForm):
     RID = StringField("RID",validators=[InputRequired()])
-    submit = SubmitField("submit") 
+    submit = SubmitField("Search Document") 
+
+class BorrowSubmit(FlaskForm):
+    RID1 = StringField("RID",validators=[InputRequired()])
+    submit = SubmitField("Return Document")
+
 
 class SearchDocument(FlaskForm):
     value = StringField("Value",validators=[InputRequired()])    

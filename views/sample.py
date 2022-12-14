@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, request, render_template, url_for, flash
 from sql.db import DB
 import pyodbc
 import pandas as pd
-from auth.forms import ReaderId, SearchDocument
+from auth.forms import BorrowSubmit, ReaderId, SearchDocument
 # import pandas as pd
 sample = Blueprint('sample', __name__, url_prefix='/sample')
 
@@ -71,13 +71,52 @@ def checkout():
 
 @sample.route('/return', methods=['GET'])
 def returns():
+    RID = request.args.get("RID")
+    READERNAME = request.args.get("READERNAME")
     DOCID = request.args.get("DOCID")
-    flash("Book returned","success")    
-    return redirect(url_for("sample.list"))
+    COPYNO = request.args.get("COPYNO")
+    BID = request.args.get("BID")
+    if DOCID!=None and COPYNO!=None and BID!=None:
+        conn_str = (r'DRIVER={SQL Server};'r'SERVER=Omkar;'r'DATABASE=OPR;'r'Trusted_Connection=yes;')
+        cnxn = pyodbc.connect(conn_str)
+        print("connection established")
+        # cursor = cnxn.cursor()
+        try:
+            cursor = cnxn.cursor()
+            cursor.execute(f"UPDATE BORROWING SET RDTIME=GETDATE() WHERE BOR_NO IN (SELECT BOR_NO FROM BORROWS WHERE DOCID='{DOCID}' AND COPYNO='{COPYNO}' AND BID='{BID}')")
+            cursor.commit()
+            flash("Book returned successfully","success")
+            return redirect(url_for("sample.returns",RID=RID,READERNAME=READERNAME))
+        except Exception as e:
+            flash(f"{str(e)}","danger")
+            flash("Their was error Returning book","warning")    
+
+    conn_str = (r'DRIVER={SQL Server};'r'SERVER=Omkar;'r'DATABASE=OPR;'r'Trusted_Connection=yes;')
+    cnxn = pyodbc.connect(conn_str)
+    print("connection established")
+    # cursor = cnxn.cursor()
+    try:
+        data = pd.read_sql(f"SELECT D.DOCID, D.TITLE , B.BID, B.COPYNO FROM BORROWS B, BORROWING BB,DOCUMENT D WHERE B.RID='{RID}' AND B.BOR_NO=BB.BOR_NO AND D.DOCID=B.DOCID AND BB.RDTIME IS NULL", cnxn)
+        rows = data.to_dict('records')
+    except Exception as e:
+        flash(f"{str(e)}","danger")
+        flash("Their was error retriving","warning")
+    
+    return render_template("borrowList.html", resp=rows,RID=RID,READERNAME=READERNAME)
+
+
+
+    # flash("Book returned","success")    
+    # return redirect(url_for("sample.list"))
+
+
+
+
+
 
 @sample.route('/reserve', methods=['GET'])
 def reserve():
-    DOCID = request.args.get("DOCID")
+    RID = request.args.get("DOCID")
     flash("Book reserved","success")
     return redirect(url_for("sample.list"))
 
@@ -90,6 +129,7 @@ def reserve():
 @sample.route('/ReaderID', methods=['GET','POST'])
 def ReaderID():
     form = ReaderId()
+    form1 = BorrowSubmit()
     if form.validate_on_submit():
         RID = form.RID.data
         conn_str = (
@@ -108,7 +148,27 @@ def ReaderID():
                 flash("Invalid ReaderID","warning")    
         except Exception as e:
             flash(f"Error{str(e)}","danger")
-    return render_template("getReaderID.html",form=form)   
+    if form1.validate_on_submit():
+        RID1 = form1.RID1.data
+        conn_str = (
+        r'DRIVER={SQL Server};'
+        r'SERVER=Omkar;'
+        r'DATABASE=OPR;'
+        r'Trusted_Connection=yes;')
+        cnxn = pyodbc.connect(conn_str)
+        print("connection established")
+        try:
+            data1 = pd.read_sql(f"SELECT * FROM READER WHERE RID='{RID1}'", cnxn)
+            data1 = data1.to_dict('records')
+            if len(data1)>0:
+                return redirect(url_for("sample.returns",RID=RID1,READERNAME=data1[0]['RNAME'])) 
+            else:
+                flash("Invalid ReaderID","warning")    
+        except Exception as e:
+            flash(f"Error{str(e)}","danger")        
+
+            
+    return render_template("getReaderID.html",form=form,form1=form1)   
 
 
 
