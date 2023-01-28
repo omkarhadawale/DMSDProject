@@ -1,3 +1,3 @@
 # DMSDProject
-# Library Data Management System Web application)
-## Python,Flask
+# Library Data Management System - Web application
+## Python - Flask
